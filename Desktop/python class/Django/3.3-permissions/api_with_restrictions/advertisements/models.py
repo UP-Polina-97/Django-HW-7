@@ -10,6 +10,8 @@ class AdvertisementStatusChoices(models.TextChoices):
 
 
 class Advertisement(models.Model):
+    id = models.AutoField(primary_key=True)
+
     """Объявление."""
 
     title = models.TextField()
