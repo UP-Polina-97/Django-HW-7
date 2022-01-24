@@ -11,18 +11,14 @@ from requests import request
 class AdvertisementViewSet(ModelViewSet):
     """ViewSet для объявлений."""
 
-    # TODO: настройте ViewSet, укажите атрибуты для кверисета,
-    #   сериализаторов и фильтров
+
     queryset = Advertisement.objects.all()
     serializer_class = AdvertisementSerializer
 
     filterset_class = AdvertisementFilter
-    #filterset_class = AdvertisementFilter(request.GET, queryset=Advertisement.objects.all())
-    throttle_classes = [AnonRateThrottle, UserRateThrottle]
-
-
-    #filter_backends = [DjangoFilterBackend, filters.SearchFilter, AdvertisementFilter]
     filter_backends = [DjangoFilterBackend]
+
+    throttle_classes = [AnonRateThrottle, UserRateThrottle]
     filterset_fields = ['creator', 'created_at']
 
     def get_permissions(self):
@@ -30,4 +26,6 @@ class AdvertisementViewSet(ModelViewSet):
         if self.action in ["create", "update", "partial_update"]:
             return [IsAuthenticated(),
                     IsOwnerOrReadOnly()]
+        if self.action in ["update", "partial_update", "destroy"]:
+            return [IsOwnerOrReadOnly()]
         return []

@@ -44,8 +44,9 @@ class AdvertisementSerializer(serializers.ModelSerializer):
 
         # TODO: добавьте требуемую валидацию
 
-        if data.get('status', 'created_at') == 'OPEN':
-            if Advertisement.objects.filter(status='OPEN', booking__post__person=self.request.user).count() > 10:
+        if data.get('status', None) == 'OPEN':
+            if Advertisement.objects.filter(status='OPEN',
+                                            creator=self.context["request"].user).count() > 10:
                 raise ValidationError('you are out of slots')
 
         return data
