@@ -12,7 +12,7 @@ class UserSerializer(serializers.ModelSerializer):
         model = User
         fields = ('id', 'username', 'first_name',
                   'last_name',)
-        read_only_fields = ['username']
+        #read_only_fields = ['username']
 
 
 class AdvertisementSerializer(serializers.ModelSerializer):
@@ -45,8 +45,10 @@ class AdvertisementSerializer(serializers.ModelSerializer):
         # TODO: добавьте требуемую валидацию
 
         if data.get('status', None) == 'OPEN':
-            if Advertisement.objects.filter(status='OPEN',
-                                            creator=self.context["request"].user).count() > 10:
+            open_for_list = Advertisement.objects.filter(
+                creator=self.context["request"].user,
+                status='OPEN')
+            if len(open_for_list) >= 10:
                 raise ValidationError('you are out of slots')
 
         return data
